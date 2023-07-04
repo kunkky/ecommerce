@@ -6,7 +6,6 @@ const BaseUrl = 'https://dummyjson.com/';
 const SingleProduct = ({ pageUrl, pageTitle }) => {
     //select from api
     const LoginUrl = BaseUrl + pageUrl;
-    console.log(LoginUrl);
     //uselayout effect to set title
     useLayoutEffect(() => {
         document.title = pageTitle;
@@ -17,8 +16,11 @@ const SingleProduct = ({ pageUrl, pageTitle }) => {
     const [feedback, setfeedback] = useState(null);
     const [products, setProducts] = useState(null);
     const [stateImg, setstateImg] = useState(null);
+    const [Cart, setCart] = useState({
+        "title": null,
+        "price": null
+    });
 
-    const Cart =[];
     const fetchProduct = useCallback(async () => {
         setLoading(true);
         try {
@@ -27,7 +29,7 @@ const SingleProduct = ({ pageUrl, pageTitle }) => {
             if (response.ok) {
                 setLoading(false);
                 setProducts(data);
-
+                setfeedback(null)
             } else {
                 setLoading(false);
                 setfeedback(data.message)
@@ -39,22 +41,23 @@ const SingleProduct = ({ pageUrl, pageTitle }) => {
     }, [LoginUrl]
     )
 
-    const addToCart = () => {
-
-    }
-
     //    fetch with useeffect if its general category
 
     useEffect(() => {
         fetchProduct();
     }, [fetchProduct]);
 
+    sessionStorage.setItem("Cart", Cart);
+
     //change image tumb nail
     return (
-        < div className="h-[100%] grid grid-flow-row grid-cols-2 p-10 overflow-auto" >
+    <>
             {
-                loading !== true ?
-                    <>  <div className="h-[100%]">
+
+                loading !== true && feedback === null ?
+            < div className="h-[100%] grid grid-flow-row grid-cols-2 p-10 overflow-auto" >
+
+                      <div className="h-[100%]">
                         <img src={stateImg !== null ? stateImg : products.images[0]} alt={products.title} className='w-[80%]  aspect-square mb-10' />
                         <div className="grid grid-flow-col gap-10 justify-between w-[80%]">
                             {
@@ -72,17 +75,20 @@ const SingleProduct = ({ pageUrl, pageTitle }) => {
                             <h1 className='capitalize text-purple-800 mb-2'>Category: {products.category}</h1>
                             <h1 className='text-slate-400 mb-2'>{products.description}</h1>
                             <h1 className='font-bold text-3xl py-5 mb-2'>{products.price} USD</h1>
-                            <button onClick={addToCart} className='hover:bg-purple-900 flex justify-center items-center capitalize bg-purple-600 p-5 text-white rounded'><span className="material-symbols-outlined">
+                            <button onClick={() => (setCart(products.price, products.title))} className='hover:bg-purple-900 flex justify-center items-center capitalize bg-purple-600 p-5 text-white rounded'><span className="material-symbols-outlined">
                                 add_shopping_cart
-                            </span> Put for bag</button>
+                            </span> Put for  bag</button>
                         </div>
-                    </>
+            </div >
+                    
                     :
-                    '...Loading'
+                    <>...Loading <br /></>
+            }
+            {
+                feedback !== null &&  {feedback} 
             }
 
-        </div >
-
+        </>
     )
 }
 

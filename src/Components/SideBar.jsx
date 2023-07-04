@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import {  NavLink, Outlet, useLocation } from 'react-router-dom'
-import { useNavigate } from "react-router-dom";
+import {NavLink} from 'react-router-dom'
 
 
 const SideBar = () => {
+//get stored variables 
 //select from api
     const LoginUrl = 'https://dummyjson.com/products/categories';
     const [loading, setLoading] = useState(true);
     const [feedback, setfeedback] = useState(null);
     const [category, setCategory] = useState(null);
 
-    const navigate = useNavigate();
 
     const fetchNav = async () => {
         setLoading(true);

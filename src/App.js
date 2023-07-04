@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import About from './Pages/About'
 import Login from './Pages/Login'
 import Forget from './Pages/Forget'
@@ -12,11 +12,8 @@ import Nav from './Components/Nav'
 import SinglePage from './Pages/SinglePage'
 import CategoryPage from './Pages/CategoryPage'
 
-import { Navigate } from 'react-router-dom'
-
-console.log(sessionStorage.getItem("user"));
 const isLoggedIn = () => {
-  if (sessionStorage.getItem("user")) {
+  if (sessionStorage.getItem("token")) {
     return true
   } else {
     return false
@@ -25,7 +22,7 @@ const isLoggedIn = () => {
 
 const ProtectedRoutes = ({ isLoggedIn, children }) => {
   if (!isLoggedIn) {
-    return <Navigate to={"/"} replace={true} />
+    return <Navigate to={"/login"} replace={true} />
   } else {
     return children
   }
@@ -40,21 +37,11 @@ const App = () => {
       <Route path='/' element={<Home />} />
       <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
-        <Route path='/login' element={
-          <ProtectedRoutes isLoggedIn={isLoggedIn()}>
-        <Login />
-        </ProtectedRoutes >
-        } 
-        
-        />
+        <Route path='/login' element={<Login />} />
+        <Route path='/forget' element={<Forget />} />
         <Route path='/dashboard' element={
           <ProtectedRoutes isLoggedIn={isLoggedIn()}>
             <Dashboard/>
-          </ProtectedRoutes>
-        } />
-        <Route path='/forget' element={
-          <ProtectedRoutes isLoggedIn={isLoggedIn()}>
-            <Forget />
           </ProtectedRoutes>
         } />
         <Route path='products/:id' element={

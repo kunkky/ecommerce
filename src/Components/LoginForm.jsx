@@ -1,9 +1,19 @@
-import React, { useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
-
-const BaseUrl ='https://dummyjson.com/';
+import { BaseUrl } from '../BaseUrl'
 const LoginForm = () => {
+
+  //check if user already is logged in 
+  useLayoutEffect(() => {
+    document.title = "Login | BEND DOWN SELECT"
+    if (sessionStorage.getItem("token")) {
+      window.location.href = "/dashboard"
+    }
+  }, [])
+
+
+
   const LoginUrl = BaseUrl +'auth/login';
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,6 +22,7 @@ const LoginForm = () => {
   const [passerror, setpasserror] = useState('');
   const [loading, setLoading] = useState(false);
   const [feedback, setfeedback] = useState('');
+
 
   //set navigator
   const navigate=useNavigate()
@@ -33,10 +44,10 @@ const LoginForm = () => {
       const data = await response.json();
       if (response.ok) {
 
-        sessionStorage.setItem("user", data);
+        sessionStorage.setItem("token", data.token);
         navigate("/dashboard", {
           state: data,
-          replace: true,
+          replace: true, 
         });
       } else {
         setLoading(false);
